@@ -1,6 +1,5 @@
 ﻿var fs = require('fs');
 
-// Configuration ==============================================================
 function checkDir(dirPath) {
     //fs.accessSync(fpath, fs.R_OK | fs.W_OK);
     fs.accessSync(dirPath, fs.R_OK);
