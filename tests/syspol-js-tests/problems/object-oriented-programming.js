@@ -5,7 +5,7 @@ var path = require('path');
 var rootPkgPrefix = "..";
 var packageJSON = require(path.join(rootPkgPrefix, 'package'));
 var problems = require(path.join(rootPkgPrefix,
-    packageJSON.dependencies["software-engineering-problems"]
+    packageJSON.dependencies["syspol-js"]
     .replace(/^file:/, "")));
 var Jessie = problems.oop.Jessie;
 

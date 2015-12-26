@@ -1,1 +1,2 @@
-﻿exports.oop = require('./problems/object-oriented-programming');
+﻿exports.fs = require('./lib/fs');
+exports.oop = require('./problems/object-oriented-programming');

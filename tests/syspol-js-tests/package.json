@@ -8,7 +8,7 @@
     "url": "http://pedroivanlopez.com"
   },
   "dependencies": {
-    "software-engineering-problems": "file:../../src/syspol-js"
+    "syspol-js": "file:../../src/syspol-js"
   },
   "devDependencies": {
     "mocha": "^2.3.4"
