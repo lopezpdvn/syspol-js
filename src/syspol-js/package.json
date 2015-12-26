@@ -1,0 +1,11 @@
+{
+  "name": "syspol-js",
+  "version": "0.0.0",
+  "description": "syspol on Node.js",
+  "main": "index.js",
+  "author": {
+    "name": "Pedro Ivan Lopez",
+    "email": "m@pedroivanlopez.com",
+    "url": "http://pedroivanlopez.com"
+  }
+}

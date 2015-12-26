@@ -1,0 +1,16 @@
+{
+  "name": "syspol-js",
+  "version": "0.0.0",
+  "description": "Tests for syspol-js",
+  "author": {
+    "name": "Pedro Ivan Lopez",
+    "email": "m@pedroivanlopez.com",
+    "url": "http://pedroivanlopez.com"
+  },
+  "dependencies": {
+    "software-engineering-problems": "file:../../src/syspol-js"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.4"
+  }
+}
