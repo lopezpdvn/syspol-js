@@ -7,10 +7,10 @@ var packageJSON = require(path.join(rootPkgPrefix, 'package'));
 var syspol = require(path.join(rootPkgPrefix,
     packageJSON.dependencies["syspol-js"]
     .replace(/^file:/, "")));
-var checkDir = syspol.fs.checkDir;
+var isDirRW = syspol.fs.isDirRW;
 
-describe('checkDir', function () {
+describe('isDirRW', function () {
     it('misc0', function () {
-        assert.strictEqual(typeof checkDir, "function");
+        assert.strictEqual(typeof isDirRW, "function");
     });
 });
