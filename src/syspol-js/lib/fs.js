@@ -5,16 +5,27 @@ var child_process = require('child_process');
 // Mirrorer =============================================================
 /* Constructor/Prototype pattern */
 function Mirrorer(src, dst, mainExternalProgram, opts, logger) {
-    this.opts = opts;
-    if(!mainExternalProgram || !opts.mainExternalProgram) {
+    //this.opts = opts;
+
+    // If logger not supplied, create dummy logger.
+    if(!logger) {
+        logger = {};
+        logger.log = function() {};
+    }
+
+    if(!mainExternalProgram) {
         throw new Error("Must supply one of `rsync` or `robocopy`");
     }
-    else if(mainExternalProgram === 'robocopy') {
-        this.mainExternalProgram = mainExternalProgram;
+    this.mainExternalProgram = mainExternalProgram;
+    if(this.mainExternalProgram === 'rsync'
+            || this.mainExternalProgram === 'robocopy') {
 
         // Test executable
         try {
-            var testExecPrg = child_process.spawnSync(this.mainExternalProgram);
+            var testExecPrgArgs = this.mainExternalProgram === 'rsync'
+                ? ['-h'] : ['/?'];
+            var testExecPrg = child_process.spawnSync(
+                    this.mainExternalProgram, testExecPrgArgs);
             if(testExecPrg.status !== 0) {
                 throw new Error();
             }
@@ -24,12 +35,12 @@ function Mirrorer(src, dst, mainExternalProgram, opts, logger) {
             throw e;
         }
     }
-    if(!opts.src) {
-        this.src = opts.src;
-    }
-    if(!opts.dst) {
-        this.dst = opts.dst;
-    }
+    //if(!opts.src) {
+        //this.src = opts.src;
+    //}
+    //if(!opts.dst) {
+        //this.dst = opts.dst;
+    //}
     this.createDate = new Date();
     //this._runLevel = 4;
 }
