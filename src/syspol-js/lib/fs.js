@@ -1,10 +1,55 @@
 ﻿var fs = require('fs');
 var path = require('path');
+var child_process = require('child_process');
+
+// Mirrorer =============================================================
+/* Constructor/Prototype pattern */
+function Mirrorer(src, dst, mainExternalProgram, opts, logger) {
+    this.opts = opts;
+    if(!mainExternalProgram || !opts.mainExternalProgram) {
+        throw new Error("Must supply one of `rsync` or `robocopy`");
+    }
+    else if(mainExternalProgram === 'robocopy') {
+        this.mainExternalProgram = mainExternalProgram;
+
+        // Test executable
+        try {
+            var testExecPrg = child_process.spawnSync(this.mainExternalProgram);
+            if(testExecPrg.status !== 0) {
+                throw new Error();
+            }
+        }
+        catch(e) {
+            logger.log("Error testing mainExternalProgram", 1);
+            throw e;
+        }
+    }
+    if(!opts.src) {
+        this.src = opts.src;
+    }
+    if(!opts.dst) {
+        this.dst = opts.dst;
+    }
+    this.createDate = new Date();
+    //this._runLevel = 4;
+}
+
+Mirrorer.prototype = {
+    //version: 8.2,
+    //releaseDate: new Date(2015, 8, 5, 0, 0, 0, 0),
+}
+
+Object.defineProperty(Mirrorer.prototype, "constructor", {
+    enumerable: false,
+    value: Mirrorer
+});
+
+// End Mirrorer =========================================================
 
 function isDirRW(dirPath) {
     // fs.accessSync(fpath, fs.R_OK | fs.W_OK);
     fs.accessSync(dirPath, fs.R_OK);
-    
+
     // Test write permissions
     var fname = path.join(dirPath, '/dummy_file_name_ASDFFGAJSDFASDFASDF');
     fs.appendFileSync(fname, "DUMMY CONTENT");
@@ -12,3 +57,4 @@ function isDirRW(dirPath) {
 }
 
 exports.isDirRW = isDirRW;
+exports.Mirrorer = Mirrorer;
