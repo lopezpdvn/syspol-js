@@ -10,6 +10,7 @@ var syspol = require(path.join(rootPkgPrefix,
 
 var isDirRW = syspol.fs.isDirRW;
 var Mirrorer = syspol.fs.Mirrorer;
+var Logger = syspol.util.Logger;
 
 describe('isDirRW', function () {
     it('misc0', function () {
@@ -18,15 +19,17 @@ describe('isDirRW', function () {
 });
 
 describe('Mirrorer', function () {
+    var logger = new Logger('mocha-testing-default-logger');
+
     it('misc tests', function () {
         assert.strictEqual(typeof Mirrorer, "function");
     });
 
     it('Detect rsync test', function () {
-        var mirrorer = new Mirrorer(['src_dir'], ['dst_dir'], 'rsync');
+        var mirrorer = new Mirrorer(['src_dir'], ['dst_dir'], 'rsync', {}, logger);
     });
 
     it('Detect robocopy test', function () {
-        var mirrorer = new Mirrorer(['src_dir'], ['dst_dir'], 'robocopy');
+        var mirrorer = new Mirrorer(['src_dir'], ['dst_dir'], 'robocopy', {}, logger);
     });
 });

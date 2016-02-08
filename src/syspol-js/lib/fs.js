@@ -14,8 +14,11 @@ function Mirrorer(src, dst, mainExternalProgram, opts, logger) {
     }
 
     if(!mainExternalProgram) {
-        throw new Error("Must supply one of `rsync` or `robocopy`");
+        var msg = "Must supply one of `rsync` or `robocopy`";
+        logger.log(msg);
+        throw new Error(msg);
     }
+
     this.mainExternalProgram = mainExternalProgram;
     if(this.mainExternalProgram === 'rsync'
             || this.mainExternalProgram === 'robocopy') {
