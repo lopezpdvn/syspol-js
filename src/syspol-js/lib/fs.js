@@ -20,24 +20,24 @@ function Mirrorer(src, dst, mainExternalProgram, opts, logger) {
     }
 
     this.mainExternalProgram = mainExternalProgram;
-    if(this.mainExternalProgram === 'rsync'
-            || this.mainExternalProgram === 'robocopy') {
 
-        // Test executable
-        try {
-            var testExecPrgArgs = this.mainExternalProgram === 'rsync'
-                ? ['-h'] : ['/?'];
+    try {
+        if (this.mainExternalProgram === 'rsync') {
+            throw Error();
+        }
+        else if (this.mainExternalProgram === 'robocopy') {
             var testExecPrg = child_process.spawnSync(
-                    this.mainExternalProgram, testExecPrgArgs);
-            if(testExecPrg.status !== 0) {
+                'where', [this.mainExternalProgram, '/q']);
+            if (testExecPrg.status !== 0) {
                 throw new Error();
             }
         }
-        catch(e) {
-            logger.log("Error testing mainExternalProgram", 1);
-            throw e;
-        }
     }
+    catch (e) {
+        logger.log("Error testing mainExternalProgram", 1);
+        throw e;
+    }
+
     //if(!opts.src) {
         //this.src = opts.src;
     //}
