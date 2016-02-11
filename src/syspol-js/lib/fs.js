@@ -21,9 +21,14 @@ function Mirrorer(src, dst, mainExternalProgram, opts, logger) {
 
     this.mainExternalProgram = mainExternalProgram;
 
+    // Detect executables in path
     try {
         if (this.mainExternalProgram === 'rsync') {
-            throw Error();
+            var testExecPrg = child_process.spawnSync(
+                'whereis', [this.mainExternalProgram]);
+            if (testExecPrg.status !== 0) {
+                throw new Error();
+            }
         }
         else if (this.mainExternalProgram === 'robocopy') {
             var testExecPrg = child_process.spawnSync(
