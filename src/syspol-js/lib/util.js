@@ -33,14 +33,14 @@ Object.defineProperty(Logger.prototype, "constructor", {
     value: Logger
 });
 
-Logger.prototype.outputFormatDefault = "[%s %s] %s %s";
+Logger.prototype.outputFormatDefault = "[%s %s] %s %s\n";
 
 Logger.prototype.log = function (msg, severity, origin) {
     origin = origin ? origin : '';
     var ISODTStr = (new Date()).toISOString();
     var msg = util.format(this.outputFormatDefault, ISODTStr, origin,
         severity, msg);
-    console.log(msg);
+    process.stdout.write(msg);
     this.fpaths.forEach((fpath) => {
         msg.toEnd(fpath);
     });

@@ -27,6 +27,15 @@ function App(appName, rootDirPath, extraLogDirs) {
     this.createDate = new Date();
     
     // Locking
+    // Start and end of program.
+    process.on('exit', (code) => {
+        if (!code) {
+            var lockFilePath = path.join(this.rootDirPath, "var/lock/LCK.." +
+                this.appName);
+            var msg = util.format("Removing lock file `%s`", lockFilePath);
+            sh.rm('-rf', lockFilePath);
+        }
+    });
 
     // Logging
     var ISODateStr = (new Date()).toISOString();
@@ -50,6 +59,7 @@ function App(appName, rootDirPath, extraLogDirs) {
     }
 
     this.logger = new Logger(this.appName, [this.logFileName]);
+
 }
 
 Object.defineProperty(App.prototype, "constructor", {
