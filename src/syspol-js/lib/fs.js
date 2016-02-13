@@ -95,13 +95,19 @@ function mirror(src, dst) {
 }
 
 function isDirRW(dirPath) {
-    // fs.accessSync(fpath, fs.R_OK | fs.W_OK);
-    fs.accessSync(dirPath, fs.R_OK);
-
-    // Test write permissions
-    var fname = path.join(dirPath, '/dummy_file_name_ASDFFGAJSDFASDFASDF');
-    fs.appendFileSync(fname, "DUMMY CONTENT");
-    fs.unlinkSync(fname);
+    try {
+        // fs.accessSync(fpath, fs.R_OK | fs.W_OK);
+        fs.accessSync(dirPath, fs.R_OK);
+        
+        // Test write permissions
+        var fname = path.join(dirPath, '/dummy_file_name_ASDFFGAJSDFASDFASDF');
+        fs.appendFileSync(fname, "DUMMY CONTENT");
+        fs.unlinkSync(fname);
+    }
+    catch (e) {
+        return false;
+    }
+    return true;
 }
 
 exports.isDirRW = isDirRW;

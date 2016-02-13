@@ -1,11 +1,18 @@
 ﻿var fs = require('fs');
 var util = require('util');
+var syspol_fs = require('./fs');
 
 // Logger =============================================================
 /* Constructor/Prototype pattern */
-function Logger(name) {
+function Logger(name, dirpath) {
     if(!name) {
         throw new Error("Logger name must be supplied");
+    }
+    if (dirpath) {
+        if (!syspol_fs.isDirRW(dirpath)) {
+            throw new Error(
+                util.format("Can't read/write to dir `%s`", dirpath));
+        }
     }
     this.name = name;
     this.createDate = new Date();
