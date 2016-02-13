@@ -27,7 +27,25 @@ function App(appName, rootDirPath, extraLogDirs) {
     this.createDate = new Date();
     
     // Locking
-    // Start and end of program.
+    var lockFilePath = path.join(this.rootDirPath,
+        "var/lock/LCK.." + this.appName);
+        
+    // Validate lock.
+    try {
+        fs.accessSync(lockFilePath, fs.F_OK);
+        var msg = util.format(
+            "Lock file exists: `%s`\nTerminating application `%s`",
+            lockFilePath, this.appName);
+        console.error(msg);
+        process.exit(1);
+    }
+    catch (e) {
+        var msg = util.format("Lock file doesn't exist, creating lock file `%s`",
+            lockFilePath);
+        sh.mkdir("-p", path.dirname(lockFilePath));
+        process.pid.toString().toEnd(lockFilePath);
+        console.log(msg);
+    }
     process.on('exit', (code) => {
         if (!code) {
             var lockFilePath = path.join(this.rootDirPath, "var/lock/LCK.." +
