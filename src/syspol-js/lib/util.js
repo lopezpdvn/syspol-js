@@ -1,20 +1,28 @@
 ﻿var fs = require('fs');
 var util = require('util');
+var path = require('path');
+
 var syspol_fs = require('./fs');
+var isDirRW = syspol_fs.isDirRW;
 
 // Logger =============================================================
 /* Constructor/Prototype pattern */
-function Logger(name, dirpath) {
-    if(!name) {
-        throw new Error("Logger name must be supplied");
+function Logger(loggerName, fpaths) {
+    if(!loggerName) {
+        throw new Error("Logger loggerName must be supplied");
     }
-    if (dirpath) {
-        if (!syspol_fs.isDirRW(dirpath)) {
-            throw new Error(
-                util.format("Can't read/write to dir `%s`", dirpath));
-        }
+
+    if (fpaths) {
+        fpaths.filter((fpath) => {
+            var fpathDir = path.dirname(fpath);
+            if (!isDirRW(fpathDir)) {
+                console.error(util.format("No RW to dir `%s`", fpathDir));
+                return false;
+            }
+            return true;
+        });
     }
-    this.name = name;
+    this.loggerName = loggerName;
     this.createDate = new Date();
 }
 
