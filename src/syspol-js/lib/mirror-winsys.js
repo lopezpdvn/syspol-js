@@ -9,7 +9,7 @@
 var sh = require('shelljs');
 var fs = require('fs');
 var path = require('path');
-var program = require('commander');
+var program = {};
 var util = require('util');
 
 // All file-based modules are relative to root of package
@@ -113,35 +113,6 @@ program.configDirs.forEach(function (configDir) {
 // End configuration ==========================================================
 
 var paths = [program.sourceDirs, program.destinationDirs];
-
-function mirror(src, dst) {
-    // Build whole dst path
-    dstSubdirArr = src.split(path.sep);
-    dstSubdirRoot = dstSubdirArr[0].replace(/:$/, '');
-    dstSubdirArr = [dstSubdirRoot].concat(dstSubdirArr.slice(1));
-    dst = path.join(dst, dstSubdirArr.join(path.sep));
-    
-    // Since robocopy doesn't like trailing backslashes, remove them.
-    // Also enclose in double quotes.
-    args = [src, dst].map(function(item) {
-      return ['"', item.replace(/\\$/, ''), '"'].join('');
-    });
-
-    //var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
-    var commandStr = util.format("robocopy %s %s /E",
-        args[0], args[1]);
-    if (program.dryRun) {
-        commandStr += " /L";
-    }
-    if (program.mirror) {
-        commandStr += " /PURGE";
-    }
-    program.log("Executing command: " + commandStr);
-    sh.exec(commandStr, { silent: false }, function (code, output) {
-        program.log('Robocopy exit code: ' + code);
-        program.log('Robocopy output:\n' + output);
-    });
-}
 
 // Strip double quotes
 paths = paths.map(function(item) {

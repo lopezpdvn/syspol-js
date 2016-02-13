@@ -65,6 +65,35 @@ Object.defineProperty(Mirrorer.prototype, "constructor", {
 
 // End Mirrorer =========================================================
 
+function mirror(src, dst) {
+    // Build whole dst path
+    dstSubdirArr = src.split(path.sep);
+    dstSubdirRoot = dstSubdirArr[0].replace(/:$/, '');
+    dstSubdirArr = [dstSubdirRoot].concat(dstSubdirArr.slice(1));
+    dst = path.join(dst, dstSubdirArr.join(path.sep));
+    
+    // Since robocopy doesn't like trailing backslashes, remove them.
+    // Also enclose in double quotes.
+    args = [src, dst].map(function (item) {
+        return ['"', item.replace(/\\$/, ''), '"'].join('');
+    });
+    
+    //var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
+    var commandStr = util.format("robocopy %s %s /E",
+        args[0], args[1]);
+    if (program.dryRun) {
+        commandStr += " /L";
+    }
+    if (program.mirror) {
+        commandStr += " /PURGE";
+    }
+    program.log("Executing command: " + commandStr);
+    sh.exec(commandStr, { silent: false }, function (code, output) {
+        program.log('Robocopy exit code: ' + code);
+        program.log('Robocopy output:\n' + output);
+    });
+}
+
 function isDirRW(dirPath) {
     // fs.accessSync(fpath, fs.R_OK | fs.W_OK);
     fs.accessSync(dirPath, fs.R_OK);
