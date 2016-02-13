@@ -25,6 +25,8 @@ function App(appName, rootDirPath, extraLogDirs) {
     
     this.rootDirPath = rootDirPath;
     this.createDate = new Date();
+    
+    // Locking
 
     // Logging
     var ISODateStr = (new Date()).toISOString();
