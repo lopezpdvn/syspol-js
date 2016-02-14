@@ -11,7 +11,6 @@ var isDirRW = syspol_fs.isDirRW;
 var Logger = syspol_util.Logger;
 
 // App =============================================================
-/* Constructor/Prototype pattern */
 function App(appName, rootDirPath, extraLogDirs) {
     if(!appName) {
         throw new Error("App appName must be supplied");
@@ -27,7 +26,7 @@ function App(appName, rootDirPath, extraLogDirs) {
     this.createDate = new Date();
     
     // Locking
-    var lockFilePath = path.join(this.rootDirPath,
+    this.lockFilePath = path.join(this.rootDirPath,
         "var/lock/LCK.." + this.appName);
         
     // Validate lock.
@@ -35,49 +34,63 @@ function App(appName, rootDirPath, extraLogDirs) {
         fs.accessSync(lockFilePath, fs.F_OK);
         var msg = util.format(
             "Lock file exists: `%s`\nTerminating application `%s`",
-            lockFilePath, this.appName);
+            this.lockFilePath, this.appName);
         console.error(msg);
         process.exit(1);
     }
     catch (e) {
-        var msg = util.format("Lock file doesn't exist, creating lock file `%s`",
-            lockFilePath);
-        sh.mkdir("-p", path.dirname(lockFilePath));
-        process.pid.toString().toEnd(lockFilePath);
-        console.log(msg);
+        try {
+            var msg = util.format(
+                "Lock file doesn't exist, creating lock file `%s`",
+                this.lockFilePath);
+            sh.mkdir("-p", path.dirname(this.lockFilePath));
+            process.pid.toString().toEnd(this.lockFilePath);
+            console.log(msg);
+        }
+        catch (e) {
+            throw new Error(
+                "Unable to create lock file " + this.lockFilePath);
+        }
     }
     process.on('exit', (code) => {
         if (!code) {
-            var lockFilePath = path.join(this.rootDirPath, "var/lock/LCK.." +
-                this.appName);
-            var msg = util.format("Removing lock file `%s`", lockFilePath);
-            sh.rm('-rf', lockFilePath);
+            var msg =
+                util.format("Removing lock file `%s`", this.lockFilePath);
+            sh.rm('-rf', this.lockFilePath);
+            if (sh.error()) {
+                throw new Error("Unable to remove lock file " 
+                    + this.lockFilePath);
+            }
         }
     });
 
     // Logging
-    var ISODateStr = (new Date()).toISOString();
+    var ISODateStr = this.createDate.toISOString();
     var year = ISODateStr.slice(0, 4);
     var month = ISODateStr.slice(5, 7);
     var day = ISODateStr.slice(8, 10);
     var logDirPath = path.join(this.rootDirPath, 'var/log', year, month, day);
-    if(!isDirRW(logDirPath)) {
-        sh.mkdir('-p', logDirPath);
-    }
-    if(!isDirRW(logDirPath)) {
-        throw new Error('Unable to create log directory');
-    }
-    this.logFileName = path.join(logDirPath, ISODateStr.slice(0, 10) + '_log_'
-            + this.appName + '.txt');
+    this.logDirPaths = [logDirPath];
     
     if (extraLogDirs && 'filter' in extraLogDirs) {
         extraLogDirs.filter((extraLogDir) => {
             return isDirRW(extraLogDir);
         });
+        this.logDirPaths = this.logDirPaths.concat(extralogDirs);
     }
+    
+    this.logFilePaths = this.logDirPaths.map( (logDirPath) => {
+        if (!isDirRW(logDirPath)) {
+            sh.mkdir('-p', logDirPath);
+        }
+        if (sh.error()) {
+            throw new Error('Unable to create log directory');
+        }
+        return path.join(logDirPath, ISODateStr.slice(0, 10) + '_log_' 
+            + this.appName + '.txt');
+    });
 
-    this.logger = new Logger(this.appName, [this.logFileName]);
-
+    this.logger = new Logger(this.appName, this.logFilePaths);
 }
 
 Object.defineProperty(App.prototype, "constructor", {

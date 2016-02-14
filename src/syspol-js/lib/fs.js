@@ -1,6 +1,9 @@
 ﻿var fs = require('fs');
 var path = require('path');
 var child_process = require('child_process');
+var util = require('util');
+
+var sh = require('shelljs');
 
 // Mirrorer =============================================================
 /* Constructor/Prototype pattern */
@@ -65,7 +68,7 @@ Object.defineProperty(Mirrorer.prototype, "constructor", {
 
 // End Mirrorer =========================================================
 
-function mirror(src, dst) {
+function robocopy(src, dst, mirror, dryRun, log) {
     // Build whole dst path
     dstSubdirArr = src.split(path.sep);
     dstSubdirRoot = dstSubdirArr[0].replace(/:$/, '');
@@ -79,18 +82,17 @@ function mirror(src, dst) {
     });
     
     //var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
-    var commandStr = util.format("robocopy %s %s /E",
-        args[0], args[1]);
-    if (program.dryRun) {
+    var commandStr = util.format("robocopy %s %s /E", src, dst);
+    if (dryRun) {
         commandStr += " /L";
     }
-    if (program.mirror) {
+    if (mirror) {
         commandStr += " /PURGE";
     }
-    program.log("Executing command: " + commandStr);
+    log("Executing command: " + commandStr, 'INFO');
     sh.exec(commandStr, { silent: false }, function (code, output) {
-        program.log('Robocopy exit code: ' + code);
-        program.log('Robocopy output:\n' + output);
+        log('Robocopy exit code: ' + code, 'INFO');
+        log('Robocopy output:\n' + output), 'INFO';
     });
 }
 
@@ -112,3 +114,4 @@ function isDirRW(dirPath) {
 
 exports.isDirRW = isDirRW;
 exports.Mirrorer = Mirrorer;
+exports.robocopy = robocopy;
