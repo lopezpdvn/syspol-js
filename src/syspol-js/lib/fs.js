@@ -90,10 +90,7 @@ function robocopy(src, dst, mirror, dryRun, log) {
         commandStr += " /PURGE";
     }
     log("Executing command: " + commandStr, 'INFO');
-    var commandObj = sh.exec(commandStr, { silent: false });
-    if (sh.error()) {
-        log(util.format('Error executing command `%s`', commandStr));
-    }
+    var commandObj = sh.exec(commandStr, { silent: true });
     log('Robocopy exit code: ' + commandObj.code, 'INFO');
     log('Robocopy output:\n' + commandObj.stdout, 'INFO');
 }
