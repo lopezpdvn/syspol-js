@@ -81,8 +81,8 @@ function robocopy(src, dst, mirror, dryRun, log) {
         return ['"', item.replace(/\\$/, ''), '"'].join('');
     });
     
-    //var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
-    var commandStr = util.format("robocopy %s %s /E", src, dst);
+    var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
+    //var commandStr = util.format("robocopy %s %s /E", src, dst);
     if (dryRun) {
         commandStr += " /L";
     }
@@ -90,10 +90,12 @@ function robocopy(src, dst, mirror, dryRun, log) {
         commandStr += " /PURGE";
     }
     log("Executing command: " + commandStr, 'INFO');
-    sh.exec(commandStr, { silent: false }, function (code, output) {
-        log('Robocopy exit code: ' + code, 'INFO');
-        log('Robocopy output:\n' + output), 'INFO';
-    });
+    var commandObj = sh.exec(commandStr, { silent: false });
+    if (sh.error()) {
+        log(util.format('Error executing command `%s`', commandStr));
+    }
+    log('Robocopy exit code: ' + commandObj.code, 'INFO');
+    log('Robocopy output:\n' + commandObj.stdout, 'INFO');
 }
 
 function isDirRW(dirPath) {
