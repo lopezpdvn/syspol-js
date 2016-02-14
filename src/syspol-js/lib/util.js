@@ -13,8 +13,9 @@ function Logger(loggerName, fpaths) {
         throw new Error("Logger loggerName must be supplied");
     }
     
-    if (fpaths) {
-        fpaths.filter((fpath) => {
+    this.fpaths = [];
+    if (fpaths && 'filter' in fpaths) {
+        this.fpaths = fpaths.filter((fpath) => {
             var fpathDir = path.dirname(fpath);
             if (!isDirRW(fpathDir)) {
                 console.error(util.format("No RW to dir `%s`", fpathDir));
@@ -23,7 +24,7 @@ function Logger(loggerName, fpaths) {
             return true;
         });
     }
-    this.fpaths = fpaths;
+
     this.loggerName = loggerName;
     this.createDate = new Date();
 }

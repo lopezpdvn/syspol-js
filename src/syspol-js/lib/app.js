@@ -61,6 +61,9 @@ function App(appName, rootDirPath, extraLogDirs) {
                 throw new Error("Unable to remove lock file " 
                     + this.lockFilePath);
             }
+            this.logger.log(util.format("Removed lock file `%s`",
+                this.lockFilePath), 'INFO');
+            this.logger.log("||||||||||| End of " + this.appName, 'INFO');
         }
     });
 
@@ -76,9 +79,9 @@ function App(appName, rootDirPath, extraLogDirs) {
         extraLogDirs.filter((extraLogDir) => {
             return isDirRW(extraLogDir);
         });
-        this.logDirPaths = this.logDirPaths.concat(extralogDirs);
+        this.logDirPaths = this.logDirPaths.concat(extraLogDirs);
     }
-    
+
     this.logFilePaths = this.logDirPaths.map( (logDirPath) => {
         if (!isDirRW(logDirPath)) {
             sh.mkdir('-p', logDirPath);
