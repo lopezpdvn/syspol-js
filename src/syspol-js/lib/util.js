@@ -7,11 +7,11 @@ var syspol_fs = require('./fs');
 var isDirRW = syspol_fs.isDirRW;
 
 // Logger =============================================================
-/* Constructor/Prototype pattern */
 function Logger(loggerName, fpaths) {
     if (!loggerName) {
         throw new Error("Logger loggerName must be supplied");
     }
+    this.loggerName = loggerName;
     
     this.fpaths = [];
     if (fpaths && 'filter' in fpaths) {
@@ -21,11 +21,11 @@ function Logger(loggerName, fpaths) {
                 console.error(util.format("No RW to dir `%s`", fpathDir));
                 return false;
             }
+            console.log(util.format('Logging to `%s`', fpath));
             return true;
         });
     }
 
-    this.loggerName = loggerName;
     this.createDate = new Date();
 }
 
@@ -44,6 +44,11 @@ Logger.prototype.log = function (msg, severity, origin) {
     process.stdout.write(msg);
     this.fpaths.forEach((fpath) => {
         msg.toEnd(fpath);
+        if (sh.error()) {
+            msg = util.format(this.outputFormatDefault, ISODTStr, origin,
+                severity, sh.error());
+            process.stderr.write(msg);
+        }
     });
 };
 // End Logger =========================================================

@@ -5,69 +5,6 @@ var util = require('util');
 
 var sh = require('shelljs');
 
-// Mirrorer =============================================================
-/* Constructor/Prototype pattern */
-function Mirrorer(src, dst, mainExternalProgram, opts, logger) {
-    //this.opts = opts;
-
-    // If logger not supplied, create dummy logger.
-    if(!logger) {
-        logger = {};
-        logger.log = function() {};
-    }
-
-    if(!mainExternalProgram) {
-        var msg = "Must supply one of `rsync` or `robocopy`";
-        logger.log(msg);
-        throw new Error(msg);
-    }
-
-    this.mainExternalProgram = mainExternalProgram;
-
-    // Detect executables in path
-    try {
-        if (this.mainExternalProgram === 'rsync') {
-            var testExecPrg = child_process.spawnSync(
-                'whereis', [this.mainExternalProgram]);
-            if (testExecPrg.status !== 0) {
-                throw new Error();
-            }
-        }
-        else if (this.mainExternalProgram === 'robocopy') {
-            var testExecPrg = child_process.spawnSync(
-                'where', [this.mainExternalProgram, '/q']);
-            if (testExecPrg.status !== 0) {
-                throw new Error();
-            }
-        }
-    }
-    catch (e) {
-        logger.log("Error testing mainExternalProgram", 1);
-        throw e;
-    }
-
-    //if(!opts.src) {
-        //this.src = opts.src;
-    //}
-    //if(!opts.dst) {
-        //this.dst = opts.dst;
-    //}
-    this.createDate = new Date();
-    //this._runLevel = 4;
-}
-
-Mirrorer.prototype = {
-    //version: 8.2,
-    //releaseDate: new Date(2015, 8, 5, 0, 0, 0, 0),
-}
-
-Object.defineProperty(Mirrorer.prototype, "constructor", {
-    enumerable: false,
-    value: Mirrorer
-});
-
-// End Mirrorer =========================================================
-
 function robocopy(src, dst, mirror, dryRun, log) {
     // Build whole dst path
     dstSubdirArr = src.split(path.sep);
@@ -112,5 +49,4 @@ function isDirRW(dirPath) {
 }
 
 exports.isDirRW = isDirRW;
-exports.Mirrorer = Mirrorer;
 exports.robocopy = robocopy;
