@@ -14,20 +14,20 @@ function robocopy(src, dst, mirror, dryRun, log) {
         process.exit(1);
     }
 
-    // Build whole dst path
-    dstSubdirArr = src.split(path.sep);
-    dstSubdirRoot = dstSubdirArr[0].replace(/:$/, '');
-    dstSubdirArr = [dstSubdirRoot].concat(dstSubdirArr.slice(1));
+    // Build whole dst path, including drive letter/id as a subdir.
+    var srcSubdirArr = src.split(path.sep);
+    var dstSubdirRoot = srcSubdirArr[0].replace(/:$/, '');
+    var dstSubdirArr = [dstSubdirRoot].concat(srcSubdirArr.slice(1));
     dst = path.join(dst, dstSubdirArr.join(path.sep));
     
     // Since robocopy doesn't like trailing backslashes, remove them.
     // Also enclose in double quotes.
-    args = [src, dst].map(function (item) {
+    var robocopyArgs = [src, dst].map(function (item) {
         return ['"', item.replace(/\\$/, ''), '"'].join('');
     });
     
-    var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
-    //var commandStr = util.format("robocopy %s %s /E", src, dst);
+    var commandStr = util.format('%s %s %s /E', robocopyExec, robocopyArgs[0],
+        robocopyArgs[1]);
     if (dryRun) {
         commandStr += " /L";
     }
