@@ -6,6 +6,14 @@ var util = require('util');
 var sh = require('shelljs');
 
 function robocopy(src, dst, mirror, dryRun, log) {
+    var robocopyExec = sh.which('robocopy');
+    if (!robocopyExec) {
+        var msg = 'Robocopy program not in path';
+        log(msg);
+        console.error(msg);
+        process.exit(1);
+    }
+
     // Build whole dst path
     dstSubdirArr = src.split(path.sep);
     dstSubdirRoot = dstSubdirArr[0].replace(/:$/, '');
