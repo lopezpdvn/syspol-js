@@ -26,18 +26,31 @@ function robocopy(src, dst, mirror, dryRun, log) {
         return ['"', item.replace(/\\$/, ''), '"'].join('');
     });
     
-    var commandStr = util.format('%s %s %s /E', robocopyExec, robocopyArgs[0],
-        robocopyArgs[1]);
+    var command = robocopyExec;
+    var commandArgs = robocopyArgs.concat(['/E']);
     if (dryRun) {
-        commandStr += " /L";
+        robocopyArgs.concat(['/L']);
     }
     if (mirror) {
-        commandStr += " /PURGE";
+        robocopyArgs.concat(['/PURGE']);
     }
-    log("Executing command: " + commandStr, 'INFO');
-    var commandObj = sh.exec(commandStr, { silent: true });
-    log('Robocopy exit code: ' + commandObj.code, 'INFO');
-    log('Robocopy output:\n' + commandObj.stdout, 'INFO');
+    var msg = util.format('Executing command %s %s', command, commandArgs);
+    log(msg, 'INFO');
+    
+    var onStdOutData = (data) => {
+        console.log(data);
+        log(data, 'INFO');
+    };
+    
+    var onStdErrData = (data) => {
+        console.error(data);
+        log(data, 'ERROR');
+    };
+    
+    var robocopyProc = syspol.child_process.spawnSync(command, commandArgs,
+        {}, onStdOutData, onStdErrData);
+
+    log('Robocopy exit code: ' + robocopyProc.code, 'INFO');
 }
 
 function isDirRW(dirPath) {
