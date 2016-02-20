@@ -5,7 +5,7 @@
   "keywords": [ "sysadmin", "system administration", "system policy" ],
   "homepage": "http://github.com/lopezpdvn/syspol-js",
   "license": "MIT",
-  "main": "index.js",
+  "main": "syspol.js",
   "author": {
     "name": "Pedro Ivan Lopez",
     "email": "m@pedroivanlopez.com",

@@ -13,7 +13,7 @@
     <ProjectGuid>{f2258249-4490-4edc-94f7-823db685b198}</ProjectGuid>
     <ProjectHome>
     </ProjectHome>
-    <StartupFile>index.js</StartupFile>
+    <StartupFile>syspol.js</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -31,11 +31,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="index.js" />
+    <Compile Include="syspol.js" />
     <Compile Include="src\app.js" />
-    <Compile Include="src\child_process.js" />
     <Compile Include="src\fs.js" />
-    <Compile Include="src\mirror-winsys.js" />
     <Compile Include="src\path.js" />
     <Compile Include="src\util.js" />
     <Compile Include="test\fs.js">
@@ -44,6 +42,8 @@
     <Compile Include="test\util.js">
       <TestFramework>Mocha</TestFramework>
     </Compile>
+    <Content Include=".gitattributes" />
+    <Content Include=".gitignore" />
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>

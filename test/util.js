@@ -11,6 +11,3 @@ describe('Logger', function () {
         assert.strictEqual(typeof Logger, "function");
     });
 });
-
-
-

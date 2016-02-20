@@ -1,4 +1,4 @@
 ﻿exports.app = require('./src/app');
-exports.child_process = require('./src/child_process');
 exports.fs = require('./src/fs');
+exports.path = require('./src/path');
 exports.util = require('./src/util');
