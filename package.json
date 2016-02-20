@@ -1,12 +1,19 @@
 {
-  "name": "syspol-js",
-  "version": "0.0.0",
+  "name": "syspol",
+  "version": "0.1.0",
   "description": "syspol on Node.js",
+  "keywords": [ "sysadmin", "system administration", "system policy" ],
+  "homepage": "http://github.com/lopezpdvn/syspol-js",
+  "license": "MIT",
   "main": "index.js",
   "author": {
     "name": "Pedro Ivan Lopez",
     "email": "m@pedroivanlopez.com",
     "url": "http://pedroivanlopez.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/lopezpdvn/syspol-js"
   },
   "dependencies": {
     "shelljs": "^0.6.0"
