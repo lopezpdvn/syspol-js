@@ -25,6 +25,15 @@ function App(appName, rootDirPath, extraLogDirs) {
     this.rootDirPath = rootDirPath;
     this.createDate = new Date();
     
+    // tmp dir
+    var tmpDir = path.join(this.rootDirPath, 'tmp');
+    if (!isDirRW(tmpDir)) {
+        sh.mkdir('-p', tmpDir);
+    }
+    if (sh.error()) {
+        throw new Error('Unable to create tmp directory');
+    }
+    
     // Locking
     this.lockFilePath = path.join(this.rootDirPath,
         "var/lock/LCK.." + this.appName);

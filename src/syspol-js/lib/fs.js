@@ -57,15 +57,6 @@ function robocopy(src, dst, mirror, dryRun, logger, logFilePath) {
     if (logFilePath) {
         var msg = util.format('Robocopy output:\n%s', sh.cat(logFilePath));
         logger.log(msg, 'INFO', 'Robocopy log File', true);
-        sh.rm('-f', logFilePath);
-        if (!sh.error()) {
-            logger.log(util.format('Deleted robocopy log file `%s`',
-                logFilePath), 'INFO');
-        }
-        else {
-            logger.log(util.format('Failed to remove robocopy log file `%s`',
-                logFilePath), 'ERROR');
-        }
     }
 }
 
