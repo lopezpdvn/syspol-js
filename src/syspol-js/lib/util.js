@@ -1,11 +1,17 @@
-﻿var fs = require('fs');
-var util = require('util');
+﻿var util = require('util');
 var path = require('path');
 var sh = require('shelljs');
 var stream = require('stream');
 
-var syspol_fs = require('./fs');
-var isDirRW = syspol_fs.isDirRW;
+// https://en.wikipedia.org/wiki/Java_logging_framework
+var LogSeverity = {
+    FATAL: 'FATAL',
+    ERROR: 'ERROR',
+    WARNING: 'WARNING',
+    INFO: 'INFO',
+    DEBUG: 'DEBUG',
+    TRACE: 'TRACE'
+};
 
 // Logger =============================================================
 function Logger(loggerName, fpaths) {
@@ -18,7 +24,7 @@ function Logger(loggerName, fpaths) {
     if (fpaths && 'filter' in fpaths) {
         this.fpaths = fpaths.filter((fpath) => {
             var fpathDir = path.dirname(fpath);
-            if (!isDirRW(fpathDir)) {
+            if (!require('./fs').isDirRW(fpathDir)) {
                 console.error(util.format("No RW to dir `%s`", fpathDir));
                 return false;
             }
@@ -61,11 +67,24 @@ Logger.prototype.log = function (msg, severity, origin, filesOnly) {
     if (filesOnly) {
         this.write2fs(msg);
     }
-    else if (severity === 'ERROR') {
-        this.stderr.write(msg);
-    }
     else {
-        this.stdout.write(msg);
+        switch (severity) {
+            case LogSeverity.FATAL:
+            case LogSeverity.ERROR:
+            case LogSeverity.WARNING:
+                this.stderr.write(msg);
+                break;
+            case LogSeverity.INFO:
+                this.stdout.write(msg);
+                break;
+            case LogSeverity.DEBUG:
+            case LogSeverity.TRACE:
+                this.write2fs(msg);
+                break;
+            default:
+                console.error('Invalid logging severity level: ' + severity);
+                process.stdout.write(msg);
+        }
     }
 };
 
@@ -100,3 +119,4 @@ function randomFileName() {
 
 exports.Logger = Logger;
 exports.randomFileName = randomFileName;
+exports.LogSeverity = LogSeverity;

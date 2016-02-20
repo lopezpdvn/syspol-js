@@ -5,7 +5,7 @@ var util = require('util');
 
 var sh = require('shelljs');
 
-var syspol_child_process = require('./child_process');
+var LogSeverity = require('./util').LogSeverity;
 
 function robocopy(src, dst, mirror, dryRun, logger, logFilePath) {
     if (!(logger && 'log' in logger && 'stdout' in logger 
@@ -18,7 +18,7 @@ function robocopy(src, dst, mirror, dryRun, logger, logFilePath) {
     var robocopyExec = sh.which('robocopy');
     if (!robocopyExec) {
         var msg = 'Robocopy program not in path';
-        logger.log(msg, 'ERROR');
+        logger.log(msg, LogSeverity.ERROR);
         process.exit(1);
     }
 
@@ -45,18 +45,18 @@ function robocopy(src, dst, mirror, dryRun, logger, logFilePath) {
         commandArgs = commandArgs.concat(['/LOG:'+logFilePath, '/TEE']);
     }
     var msg = util.format('Executing command %s %s', command, commandArgs);
-    logger.log(msg, 'INFO');
+    logger.log(msg, LogSeverity.INFO);
     
     var onStdOutData = (data) => { logger.stdout.write(data) };
     var onStdErrData = (data) => { logger.stderr.write(data) };
     
     var robocopyProc = child_process.spawnSync(command, commandArgs,
         { stdio: 'inherit' });
-    logger.log('Robocopy exit code: ' + robocopyProc.status, 'INFO');
+    logger.log('Robocopy exit code: ' + robocopyProc.status, LogSeverity.INFO);
 
     if (logFilePath) {
         var msg = util.format('Robocopy output:\n%s', sh.cat(logFilePath));
-        logger.log(msg, 'INFO', 'Robocopy log File', true);
+        logger.log(msg, LogSeverity.INFO, 'Robocopy log File', true);
     }
 }
 
