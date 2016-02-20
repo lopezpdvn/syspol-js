@@ -29,9 +29,18 @@ function Logger(loggerName, fpaths) {
 
     this.createDate = new Date();
 
-    var writableStreamStdOut = new stream.Writable({
+    this.stdout = new stream.Writable({
         write: (chunk, encoding, next) => {
-        process.stdout.write(chunk);
+            process.stdout.write(chunk);
+            this.write2fs(chunk);
+            next();
+        }
+    });
+
+    this.stderr = new stream.Writable({
+        write: (chunk, encoding, next) => {
+            process.stderr.write(chunk);
+            this.write2fs(chunk);
             next();
         }
     });
@@ -49,11 +58,11 @@ Logger.prototype.log = function (msg, severity, origin) {
     var ISODTStr = (new Date()).toISOString();
     var msg = util.format(this.outputFormatDefault, ISODTStr, origin,
         severity, msg);
-    process.stdout.write(msg);
-    this.write2fs(msg);
+    this.stdout.write(msg);
 };
 
 Logger.prototype.write2fs = function (data) {
+    data = data.toString();
     this.fpaths.forEach((fpath) => {
         data.toEnd(fpath);
         if (sh.error()) {
