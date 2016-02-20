@@ -71,9 +71,9 @@ Logger.prototype.write2fs = function (data) {
     this.fpaths.forEach((fpath) => {
         data.toEnd(fpath);
         if (sh.error()) {
-            data = util.format(this.outputFormatDefault, ISODTStr, origin,
-                severity, sh.error());
-            process.stderr.write(data);
+            var msg = util.format('Failed to write to log filepath `%s`',
+                fpath);
+            process.stderr.write(msg);
         }
     });
 };

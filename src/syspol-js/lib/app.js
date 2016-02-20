@@ -6,7 +6,6 @@ var sh = require('shelljs');
 
 var syspol_fs = require('./fs');
 var syspol_util = require('./util');
-
 var isDirRW = syspol_fs.isDirRW;
 var Logger = syspol_util.Logger;
 
@@ -21,8 +20,8 @@ function App(appName, rootDirPath, extraLogDirs) {
         throw new Error(
             util.format("Can't read/write to dir `%s`", rootDirPath));
     }
-    
     this.rootDirPath = rootDirPath;
+
     this.createDate = new Date();
     
     // tmp dir
@@ -62,18 +61,28 @@ function App(appName, rootDirPath, extraLogDirs) {
         }
     }
     process.on('exit', (code) => {
-        if (!code) {
-            var msg =
-                util.format("Removing lock file `%s`", this.lockFilePath);
-            sh.rm('-rf', this.lockFilePath);
-            if (sh.error()) {
-                throw new Error("Unable to remove lock file " 
-                    + this.lockFilePath);
+        var logOrConsoleOutput = (msg, severity) => {
+            try {
+                this.logger.log(msg, severity);
             }
-            this.logger.log(util.format("Removed lock file `%s`",
-                this.lockFilePath), 'INFO');
-            this.logger.log("||||||||||| End of " + this.appName, 'INFO');
+            catch (e) {
+                console.error(msg);
+                console.error(e);
+            }
+        };
+
+        sh.rm('-rf', this.lockFilePath);
+        if (sh.error()) {
+            logOrConsoleOutput.error("Unable to remove lock file "
+                + this.lockFilePath);
         }
+        else {
+            var msg = util.format("Removed lock file `%s`", this.lockFilePath)
+            logOrConsoleOutput(msg, 'INFO');
+        }
+
+        var msg = "||||||||||| End of " + this.appName;
+        logOrConsoleOutput(msg, 'INFO');
     });
 
     // Logging
