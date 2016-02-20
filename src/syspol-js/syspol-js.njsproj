@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="index.js" />
+    <Compile Include="lib\child_process.js" />
     <Compile Include="lib\fs.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />

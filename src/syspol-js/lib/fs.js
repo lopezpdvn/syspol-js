@@ -5,6 +5,8 @@ var util = require('util');
 
 var sh = require('shelljs');
 
+var syspol_child_process = require('./child_process');
+
 function robocopy(src, dst, mirror, dryRun, log) {
     var robocopyExec = sh.which('robocopy');
     if (!robocopyExec) {
@@ -47,7 +49,7 @@ function robocopy(src, dst, mirror, dryRun, log) {
         log(data, 'ERROR');
     };
     
-    var robocopyProc = syspol.child_process.spawnSync(command, commandArgs,
+    var robocopyProc = syspol_child_process.spawnSync(command, commandArgs,
         {}, onStdOutData, onStdErrData);
 
     log('Robocopy exit code: ' + robocopyProc.code, 'INFO');
