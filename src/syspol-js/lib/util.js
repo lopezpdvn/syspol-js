@@ -53,12 +53,17 @@ Object.defineProperty(Logger.prototype, "constructor", {
 
 Logger.prototype.outputFormatDefault = "[%s %s] %s %s\n";
 
-Logger.prototype.log = function (msg, severity, origin) {
+Logger.prototype.log = function (msg, severity, origin, filesOnly) {
     origin = origin ? origin : '';
     var ISODTStr = (new Date()).toISOString();
     var msg = util.format(this.outputFormatDefault, ISODTStr, origin,
         severity, msg);
-    this.stdout.write(msg);
+    if (filesOnly) {
+        this.write2fs(msg);
+    }
+    else {
+        this.stdout.write(msg);
+    }
 };
 
 Logger.prototype.write2fs = function (data) {
@@ -76,15 +81,17 @@ Logger.prototype.write2fs = function (data) {
 
 // https://github.com/shelljs/shelljs/blob/0166658597a69a77b4d1343217b12e2a50ee2df3/src/common.js#L164
 function randomFileName() {
-    if (count === 1)
-        return parseInt(16*Math.random(), 10).toString(16);
-    else {
-        var hash = '';
-        for (var i=0; i<count; i++)
-            hash += randomHash(1);
-        return hash;
+    function randomHash(count) {
+        if (count === 1)
+            return parseInt(16*Math.random(), 10).toString(16);
+        else {
+            var hash = '';
+            for (var i=0; i<count; i++)
+                hash += randomHash(1);
+            return hash;
+        }
     }
-
+    
     return 'syspol_'+randomHash(20);
 }
 

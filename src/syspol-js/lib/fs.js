@@ -7,7 +7,7 @@ var sh = require('shelljs');
 
 var syspol_child_process = require('./child_process');
 
-function robocopy(src, dst, mirror, dryRun, logger) {
+function robocopy(src, dst, mirror, dryRun, logger, logFilePath) {
     if (!(logger && 'log' in logger && 'stdout' in logger 
         && 'stderr' in logger)) {
         var msg = 'Logger object must be provided';
@@ -36,10 +36,13 @@ function robocopy(src, dst, mirror, dryRun, logger) {
     var command = robocopyExec;
     var commandArgs = robocopyArgs.concat(['/E']);
     if (dryRun) {
-        robocopyArgs.concat(['/L']);
+        commandArgs = commandArgs.concat(['/L']);
     }
     if (mirror) {
-        robocopyArgs.concat(['/PURGE']);
+        commandArgs = commandArgs.concat(['/PURGE']);
+    }
+    if (logFilePath) {
+        commandArgs = commandArgs.concat(['/LOG:'+logFilePath, '/TEE']);
     }
     var msg = util.format('Executing command %s %s', command, commandArgs);
     logger.log(msg, 'INFO');
@@ -50,8 +53,20 @@ function robocopy(src, dst, mirror, dryRun, logger) {
     var robocopyProc = child_process.spawnSync(command, commandArgs,
         { stdio: 'inherit' });
     logger.log('Robocopy exit code: ' + robocopyProc.status, 'INFO');
-    logger.log('Robocopy stdout:\n' + robocopyProc.stdout, 'INFO');
-    logger.log('Robocopy stderr:\n' + robocopyProc.stderr, 'ERROR');
+
+    if (logFilePath) {
+        var msg = util.format('Robocopy output:\n%s', sh.cat(logFilePath));
+        logger.log(msg, 'INFO', 'Robocopy log File', true);
+        sh.rm('-f', logFilePath);
+        if (!sh.error()) {
+            logger.log(util.format('Deleted robocopy log file `%s`',
+                logFilePath), 'INFO');
+        }
+        else {
+            logger.log(util.format('Failed to remove robocopy log file `%s`',
+                logFilePath), 'ERROR');
+        }
+    }
 }
 
 function isDirRW(dirPath) {
