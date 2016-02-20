@@ -50,12 +50,16 @@ Logger.prototype.log = function (msg, severity, origin) {
     var msg = util.format(this.outputFormatDefault, ISODTStr, origin,
         severity, msg);
     process.stdout.write(msg);
+    this.write2fs(msg);
+};
+
+Logger.prototype.write2fs = function (data) {
     this.fpaths.forEach((fpath) => {
-        msg.toEnd(fpath);
+        data.toEnd(fpath);
         if (sh.error()) {
-            msg = util.format(this.outputFormatDefault, ISODTStr, origin,
+            data = util.format(this.outputFormatDefault, ISODTStr, origin,
                 severity, sh.error());
-            process.stderr.write(msg);
+            process.stderr.write(data);
         }
     });
 };
