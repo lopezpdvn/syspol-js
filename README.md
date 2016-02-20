@@ -1,4 +1,4 @@
-# syspol-js
+﻿# syspol-js
 
 by [Pedro Ivan Lopez](http://pedroivanlopez.com)
 

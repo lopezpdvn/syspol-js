@@ -1,16 +1,17 @@
 {
   "name": "syspol-js",
   "version": "0.0.0",
-  "description": "Tests for syspol-js",
+  "description": "syspol on Node.js",
+  "main": "index.js",
   "author": {
     "name": "Pedro Ivan Lopez",
     "email": "m@pedroivanlopez.com",
     "url": "http://pedroivanlopez.com"
   },
   "dependencies": {
-    "syspol-js": "file:../../src/syspol-js"
+    "shelljs": "^0.6.0"
   },
   "devDependencies": {
-    "mocha": "^2.3.4"
+    "mocha": "^2.4.5"
   }
 }
