@@ -44,19 +44,14 @@ function robocopy(src, dst, mirror, dryRun, logger) {
     var msg = util.format('Executing command %s %s', command, commandArgs);
     logger.log(msg, 'INFO');
     
-    var onStdOutData = (data) => {
-        console.log(data);
-        logger.log(data, 'INFO');
-    };
+    var onStdOutData = (data) => { logger.stdout.write(data) };
+    var onStdErrData = (data) => { logger.stderr.write(data) };
     
-    var onStdErrData = (data) => {
-        console.error(data);
-        logger.log(data, 'ERROR');
-    };
-    
-    var robocopyProc = child_process.spawnSync(command, commandArgs);
-    logger.log('Robocopy exit code: ' + robocopyProc.code, 'INFO');
-    logger.log('Robocopy output:\n' + robocopyProc.stdout, 'INFO');
+    var robocopyProc = child_process.spawnSync(command, commandArgs,
+        { stdio: 'inherit' });
+    logger.log('Robocopy exit code: ' + robocopyProc.status, 'INFO');
+    logger.log('Robocopy stdout:\n' + robocopyProc.stdout, 'INFO');
+    logger.log('Robocopy stderr:\n' + robocopyProc.stderr, 'ERROR');
 }
 
 function isDirRW(dirPath) {
