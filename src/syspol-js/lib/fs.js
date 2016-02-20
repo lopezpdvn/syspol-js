@@ -23,9 +23,8 @@ function robocopy(src, dst, mirror, dryRun, log) {
     dst = path.join(dst, dstSubdirArr.join(path.sep));
     
     // Since robocopy doesn't like trailing backslashes, remove them.
-    // Also enclose in double quotes.
     var robocopyArgs = [src, dst].map(function (item) {
-        return ['"', item.replace(/\\$/, ''), '"'].join('');
+        return item.replace(/\\$/, '');
     });
     
     var command = robocopyExec;
@@ -49,10 +48,9 @@ function robocopy(src, dst, mirror, dryRun, log) {
         log(data, 'ERROR');
     };
     
-    var robocopyProc = syspol_child_process.spawnSync(command, commandArgs,
-        {}, onStdOutData, onStdErrData);
-
+    var robocopyProc = child_process.spawnSync(command, commandArgs);
     log('Robocopy exit code: ' + robocopyProc.code, 'INFO');
+    log('Robocopy output:\n' + robocopyProc.stdout, 'INFO');
 }
 
 function isDirRW(dirPath) {

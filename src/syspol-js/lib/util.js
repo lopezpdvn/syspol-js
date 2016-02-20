@@ -2,6 +2,7 @@
 var util = require('util');
 var path = require('path');
 var sh = require('shelljs');
+var stream = require('stream');
 
 var syspol_fs = require('./fs');
 var isDirRW = syspol_fs.isDirRW;
@@ -27,6 +28,13 @@ function Logger(loggerName, fpaths) {
     }
 
     this.createDate = new Date();
+
+    var writableStreamStdOut = new stream.Writable({
+        write: (chunk, encoding, next) => {
+        process.stdout.write(chunk);
+            next();
+        }
+    });
 }
 
 Object.defineProperty(Logger.prototype, "constructor", {
