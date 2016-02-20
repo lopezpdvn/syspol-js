@@ -61,6 +61,9 @@ Logger.prototype.log = function (msg, severity, origin, filesOnly) {
     if (filesOnly) {
         this.write2fs(msg);
     }
+    else if (severity === 'ERROR') {
+        this.stderr.write(msg);
+    }
     else {
         this.stdout.write(msg);
     }
