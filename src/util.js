@@ -58,11 +58,14 @@ Object.defineProperty(Logger.prototype, "constructor", {
 });
 
 Logger.prototype.outputFormatDefault = "[%s %s] %s %s\n";
+Logger.prototype.outputDTOpts = {hour12: false };
+Logger.prototype.outputDTLocale = 'en-US';
 
 Logger.prototype.log = function (msg, severity, origin, filesOnly) {
     origin = origin ? origin : '';
-    var ISODTStr = (new Date()).toISOString();
-    var msg = util.format(this.outputFormatDefault, ISODTStr, origin,
+    var LogDateStr = (new Date())
+        .toLocaleString(this.outputDTLocale, this.outputDTOpts)
+    var msg = util.format(this.outputFormatDefault, LogDateStr, origin,
         severity, msg);
     if (filesOnly) {
         this.write2fs(msg);

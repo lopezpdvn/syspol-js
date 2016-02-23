@@ -10,7 +10,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{f2258249-4490-4edc-94f7-823db685b198}</ProjectGuid>
+    <ProjectGuid>{25499b99-38c1-483e-b8bd-067468d3c442}</ProjectGuid>
     <ProjectHome>
     </ProjectHome>
     <StartupFile>syspol.js</StartupFile>
