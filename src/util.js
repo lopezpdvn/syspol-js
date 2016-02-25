@@ -63,6 +63,7 @@ Logger.prototype.outputDTLocale = 'en-US';
 
 Logger.prototype.log = function (msg, severity, origin, filesOnly) {
     origin = origin ? origin : '';
+    severity = severity ? severity : LogSeverity.INFO;
     var LogDateStr = (new Date())
         .toLocaleString(this.outputDTLocale, this.outputDTOpts)
     var msg = util.format(this.outputFormatDefault, LogDateStr, origin,
