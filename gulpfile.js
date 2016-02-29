@@ -1,23 +1,18 @@
 var util = require('util');
 
-var syspol = require('./');
-
-var Logger = syspol.util.Logger;
-
 var gulp = require('gulp');
 
-var project = {
-    name: 'audio configdir',
-    version: '0.0.0'
+var syspol = require('./');
+
+var pkgJSON = require('./package.json');
+var logger = new syspol.util.Logger(pkgJSON.name);
+
+function help() {
+    var tasks = ['help'];
+    var msg = 'Tasks:\n' + tasks.join('\n');
+    console.log(msg);
 }
 
-var logger = new Logger(project.name);
-
-gulp.task('default', function() {
-    logger.log('From default function');
-});
-
-gulp.task('h', function() {
-    //logger.log(msg);
-    logger.log('From help function');
-});
+gulp.task('default', help);
+gulp.task('h', help);
+gulp.task('help', help);
