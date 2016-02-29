@@ -10,7 +10,7 @@ var isDirRW = syspol_fs.isDirRW;
 var Logger = syspol_util.Logger;
 
 // App =============================================================
-function App(appName, rootDirPath, extraLogDirs) {
+function App(appName, rootDirPath, extraLogDirs, appDirLogging) {
     if(!appName) {
         throw new Error("App appName must be supplied");
     }
@@ -23,7 +23,7 @@ function App(appName, rootDirPath, extraLogDirs) {
     this.rootDirPath = rootDirPath;
 
     this.createDate = new Date();
-    
+
     // tmp dir
     var tmpDir = path.join(this.rootDirPath, 'tmp');
     if (!isDirRW(tmpDir)) {
@@ -90,17 +90,24 @@ function App(appName, rootDirPath, extraLogDirs) {
     var year = ISODateStr.slice(0, 4);
     var month = ISODateStr.slice(5, 7);
     var day = ISODateStr.slice(8, 10);
-    var logDirPath = path.join(this.rootDirPath, 'var/log', year, month, day);
-    this.logDirPaths = [logDirPath];
+    var logDirPaths = [];
+
+    // Application root standard log location is optional ($APPROOT/var/log)
+    if(appDirLogging) {
+        var appRootLogDirPath = path.join(this.rootDirPath, 'var/log', year,
+                month, day);
+        logDirPaths[logDirPaths.length] = appRootLogDirPath;
+    }
     
     if (extraLogDirs && 'filter' in extraLogDirs) {
         extraLogDirs = extraLogDirs.filter((extraLogDir) => {
             return isDirRW(extraLogDir);
         });
-        this.logDirPaths = this.logDirPaths.concat(extraLogDirs);
+        logDirPaths = logDirPaths.concat(extraLogDirs);
     }
 
-    this.logFilePaths = this.logDirPaths.map( (logDirPath) => {
+    // Throw error if some logDirPath not readable/writable
+    this.logFilePaths = logDirPaths.map( (logDirPath) => {
         if (!isDirRW(logDirPath)) {
             sh.mkdir('-p', logDirPath);
         }
