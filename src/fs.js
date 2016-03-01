@@ -7,6 +7,8 @@ var sh = require('shelljs');
 
 var LogSeverity = require('./util').LogSeverity;
 
+var FILE_DEFAULT_ENCODING = 'utf-8';
+
 function robocopy(src, dst, mirror, dryRun, logger, logFilePath) {
     if (!(logger && 'log' in logger && 'stdout' in logger 
         && 'stderr' in logger)) {
@@ -76,5 +78,15 @@ function isDirRW(dirPath) {
     return true;
 }
 
+function fileLines2Array(fpath, encoding) {
+    encoding = encoding ? encoding : FILE_DEFAULT_ENCODING;
+    var fileBuff = fs.readFileSync(fpath, {encoding: encoding});
+    var fileLinesArr = fileBuff.split('\n');
+    return fileLinesArr.filter(
+            // Filter out last and empty lines.
+            (line, index, arr) => !(line === '' && index === arr.length - 1));
+}
+
 exports.isDirRW = isDirRW;
 exports.robocopy = robocopy;
+exports.fileLines2Array = fileLines2Array;
