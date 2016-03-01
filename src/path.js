@@ -1,4 +1,6 @@
-﻿var fs = require('fs');
+﻿'use strict'
+
+var fs = require('fs');
 var util = require('util');
 var path = require('path');
 var sh = require('shelljs');
