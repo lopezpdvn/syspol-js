@@ -1,9 +1,10 @@
-var util = require('util');
+const util = require('util');
 
-var gulp = require('gulp');
-var sh = require('shelljs');
+const gulp = require('gulp');
+const sh = require('shelljs');
+const babel = require('gulp-babel');
 
-var syspol = require('./');
+const syspol = require('./');
 
 var pkgJSON = require('./package.json');
 var logger = new syspol.util.Logger(pkgJSON.name);
@@ -21,4 +22,10 @@ gulp.task('help', help);
 gulp.task('publish', function() {
     var git = sh.exec('git push origin master');
     logger.log('Git exit code: ' + git.code);
+});
+
+gulp.task('build', function() {
+    gulp.src('src/**/*.js')
+        .pipe(babel())
+        .pipe(gulp.dest('dist'));
 });

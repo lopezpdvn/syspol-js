@@ -1,8 +1,12 @@
 {
   "name": "syspol",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "syspol on Node.js",
-  "keywords": [ "sysadmin", "system administration", "system policy" ],
+  "keywords": [
+    "sysadmin",
+    "system administration",
+    "system policy"
+  ],
   "homepage": "http://github.com/lopezpdvn/syspol-js",
   "license": "MIT",
   "main": "syspol.js",
@@ -16,10 +20,12 @@
     "url": "http://github.com/lopezpdvn/syspol-js"
   },
   "dependencies": {
-    "shelljs": "^0.6.0"
+    "shelljs": "latest"
   },
   "devDependencies": {
-    "mocha": "^2.4.5",
-    "gulp": "latest"
+    "mocha": "latest",
+    "gulp": "latest",
+    "babel-preset-es2015": "latest",
+    "gulp-babel": "latest"
   }
 }
