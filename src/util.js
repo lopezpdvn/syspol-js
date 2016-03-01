@@ -19,7 +19,7 @@ function Logger(loggerName, fpaths) {
         throw new Error("Logger loggerName must be supplied");
     }
     this.loggerName = loggerName;
-    
+
     this.fpaths = [];
     if (fpaths && 'filter' in fpaths) {
         this.fpaths = fpaths.filter((fpath) => {
@@ -117,10 +117,21 @@ function randomFileName() {
             return hash;
         }
     }
-    
+
     return 'syspol_'+randomHash(20);
+}
+
+function callThrows(call) {
+    try {
+       call();
+       return null;
+    }
+    catch(e) {
+        return e;
+    }
 }
 
 exports.Logger = Logger;
 exports.randomFileName = randomFileName;
 exports.LogSeverity = LogSeverity;
+exports.callThrows = callThrows;
