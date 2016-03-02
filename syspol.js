@@ -1,4 +1,4 @@
-﻿exports.app = require('./src/app');
-exports.fs = require('./src/fs');
-exports.path = require('./src/path');
-exports.util = require('./src/util');
+﻿exports.app = require('./dist/app');
+exports.fs = require('./dist/fs');
+exports.path = require('./dist/path');
+exports.util = require('./dist/util');
