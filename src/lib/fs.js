@@ -8,6 +8,7 @@ var util = require('util');
 var sh = require('shelljs');
 
 var LogSeverity = require('./util').LogSeverity;
+var callThrows = require('./util').callThrows;
 
 var FILE_DEFAULT_ENCODING = 'utf-8';
 
@@ -89,6 +90,11 @@ function fileLines2Array(fpath, encoding) {
             (line, index, arr) => !(line === '' && index === arr.length - 1));
 }
 
+function isReadable(fpath) {
+    return !callThrows(() => fs.accessSync(fpath, fs.R_OK));
+}
+
 exports.isDirRW = isDirRW;
 exports.robocopy = robocopy;
 exports.fileLines2Array = fileLines2Array;
+exports.isReadable = isReadable;
