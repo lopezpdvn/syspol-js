@@ -90,9 +90,7 @@ function fileLines2Array(fpath, encoding) {
             (line, index, arr) => !(line === '' && index === arr.length - 1));
 }
 
-function isReadable(fpath) {
-    return !callThrows(() => fs.accessSync(fpath, fs.R_OK));
-}
+const isReadable = fpath => !callThrows(() => fs.accessSync(fpath, fs.R_OK));
 
 exports.isDirRW = isDirRW;
 exports.robocopy = robocopy;
