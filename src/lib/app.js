@@ -1,15 +1,15 @@
-﻿'use strict'
+﻿'use strict';
 
-var fs = require('fs');
-var util = require('util');
-var path = require('path');
+const fs = require('fs');
+const util = require('util');
+const path = require('path');
 
-var sh = require('shelljs');
+const sh = require('shelljs');
 
-var syspol_fs = require('./fs');
-var syspol_util = require('./util');
-var isDirRW = syspol_fs.isDirRW;
-var Logger = syspol_util.Logger;
+const syspol_fs = require('./fs');
+const syspol_util = require('./util');
+const isDirRW = syspol_fs.isDirRW;
+const Logger = syspol_util.Logger;
 
 // App =============================================================
 function App(appName, rootDirPath, extraLogDirs, appDirLogging) {
@@ -27,7 +27,7 @@ function App(appName, rootDirPath, extraLogDirs, appDirLogging) {
     this.createDate = new Date();
 
     // tmp dir
-    var tmpDir = path.join(this.rootDirPath, 'tmp');
+    const tmpDir = path.join(this.rootDirPath, 'tmp');
     if (!isDirRW(tmpDir)) {
         sh.mkdir('-p', tmpDir);
     }
@@ -42,7 +42,7 @@ function App(appName, rootDirPath, extraLogDirs, appDirLogging) {
     // Validate lock.
     try {
         fs.accessSync(lockFilePath, fs.F_OK);
-        var msg = util.format(
+        let msg = util.format(
             "Lock file exists: `%s`\nTerminating application `%s`",
             this.lockFilePath, this.appName);
         console.error(msg);
@@ -50,7 +50,7 @@ function App(appName, rootDirPath, extraLogDirs, appDirLogging) {
     }
     catch (e) {
         try {
-            var msg = util.format(
+            let msg = util.format(
                 "Lock file doesn't exist, creating lock file `%s`",
                 this.lockFilePath);
             sh.mkdir("-p", path.dirname(this.lockFilePath));
@@ -63,7 +63,7 @@ function App(appName, rootDirPath, extraLogDirs, appDirLogging) {
         }
     }
     process.on('exit', (code) => {
-        var logOrConsoleOutput = (msg, severity) => {
+        const logOrConsoleOutput = (msg, severity) => {
             try {
                 this.logger.log(msg, severity);
             }
@@ -79,24 +79,24 @@ function App(appName, rootDirPath, extraLogDirs, appDirLogging) {
                 + this.lockFilePath);
         }
         else {
-            var msg = util.format("Removed lock file `%s`", this.lockFilePath)
+            let msg = util.format("Removed lock file `%s`", this.lockFilePath)
             logOrConsoleOutput(msg, 'INFO');
         }
 
-        var msg = "||||||||||| End of " + this.appName;
+        let msg = "||||||||||| End of " + this.appName;
         logOrConsoleOutput(msg, 'INFO');
     });
 
     // Logging
-    var ISODateStr = this.createDate.toISOString();
-    var year = ISODateStr.slice(0, 4);
-    var month = ISODateStr.slice(5, 7);
-    var day = ISODateStr.slice(8, 10);
-    var logDirPaths = [];
+    const ISODateStr = this.createDate.toISOString();
+    const year = ISODateStr.slice(0, 4);
+    const month = ISODateStr.slice(5, 7);
+    const day = ISODateStr.slice(8, 10);
+    let logDirPaths = [];
 
     // Application root standard log location is optional ($APPROOT/var/log)
     if(appDirLogging) {
-        var appRootLogDirPath = path.join(this.rootDirPath, 'var/log', year,
+        const appRootLogDirPath = path.join(this.rootDirPath, 'var/log', year,
                 month, day);
         logDirPaths[logDirPaths.length] = appRootLogDirPath;
     }
