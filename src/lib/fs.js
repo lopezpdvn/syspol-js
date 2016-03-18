@@ -1,45 +1,45 @@
 ﻿'use strict'
 
-var fs = require('fs');
-var path = require('path');
-var child_process = require('child_process');
-var util = require('util');
+const fs = require('fs');
+const path = require('path');
+const child_process = require('child_process');
+const util = require('util');
 
-var sh = require('shelljs');
+const sh = require('shelljs');
 
-var LogSeverity = require('./util').LogSeverity;
-var callThrows = require('./util').callThrows;
+const LogSeverity = require('./util').LogSeverity;
+const callThrows = require('./util').callThrows;
 
-var FILE_DEFAULT_ENCODING = 'utf-8';
+const FILE_DEFAULT_ENCODING = 'utf-8';
 
-function robocopy(src, dst, mirror, dryRun, logger, logFilePath) {
+const robocopy = (src, dst, mirror, dryRun, logger, logFilePath) => {
     if (!(logger && 'log' in logger && 'stdout' in logger 
         && 'stderr' in logger)) {
-        var msg = 'Logger object must be provided';
+        const msg = 'Logger object must be provided';
         console.error(msg);
         process.exit(1);
     }
 
     var robocopyExec = sh.which('robocopy');
     if (!robocopyExec) {
-        var msg = 'Robocopy program not in path';
+        const msg = 'Robocopy program not in path';
         logger.log(msg, LogSeverity.ERROR);
         process.exit(1);
     }
 
     // Build whole dst path, including drive letter/id as a subdir.
-    var srcSubdirArr = src.split(path.sep);
-    var dstSubdirRoot = srcSubdirArr[0].replace(/:$/, '');
-    var dstSubdirArr = [dstSubdirRoot].concat(srcSubdirArr.slice(1));
+    const srcSubdirArr = src.split(path.sep);
+    const dstSubdirRoot = srcSubdirArr[0].replace(/:$/, '');
+    const dstSubdirArr = [dstSubdirRoot].concat(srcSubdirArr.slice(1));
     dst = path.join(dst, dstSubdirArr.join(path.sep));
     
     // Since robocopy doesn't like trailing backslashes, remove them.
-    var robocopyArgs = [src, dst].map(function (item) {
+    const robocopyArgs = [src, dst].map(function (item) {
         return item.replace(/\\$/, '');
     });
     
-    var command = robocopyExec;
-    var commandArgs = robocopyArgs.concat(['/E']);
+    const command = robocopyExec;
+    let commandArgs = robocopyArgs.concat(['/E']);
     if (dryRun) {
         commandArgs = commandArgs.concat(['/L']);
     }
@@ -49,29 +49,26 @@ function robocopy(src, dst, mirror, dryRun, logger, logFilePath) {
     if (logFilePath) {
         commandArgs = commandArgs.concat(['/LOG:'+logFilePath, '/TEE']);
     }
-    var msg = util.format('Executing command %s %s', command, commandArgs);
+    const msg = util.format('Executing command %s %s', command, commandArgs);
     logger.log(msg, LogSeverity.INFO);
     
-    var onStdOutData = (data) => { logger.stdout.write(data) };
-    var onStdErrData = (data) => { logger.stderr.write(data) };
-    
-    var robocopyProc = child_process.spawnSync(command, commandArgs,
+    const robocopyProc = child_process.spawnSync(command, commandArgs,
         { stdio: 'inherit' });
     logger.log('Robocopy exit code: ' + robocopyProc.status, LogSeverity.INFO);
 
     if (logFilePath) {
-        var msg = util.format('Robocopy output:\n%s', sh.cat(logFilePath));
+        const msg = util.format('Robocopy output:\n%s', sh.cat(logFilePath));
         logger.log(msg, LogSeverity.INFO, 'Robocopy log File', true);
     }
-}
+};
 
-function isDirRW(dirPath) {
+const isDirRW = dirPath => {
     try {
         // fs.accessSync(fpath, fs.R_OK | fs.W_OK);
         fs.accessSync(dirPath, fs.R_OK);
         
         // Test write permissions
-        var fname = path.join(dirPath, '/dummy_file_name_ASDFFGAJSDFASDFASDF');
+        const fname = path.join(dirPath, '/dummy_file_name_ASDFFGAJSDFASDFASDF');
         fs.appendFileSync(fname, "DUMMY CONTENT");
         fs.unlinkSync(fname);
     }
@@ -79,16 +76,16 @@ function isDirRW(dirPath) {
         return false;
     }
     return true;
-}
+};
 
-function fileLines2Array(fpath, encoding) {
+const fileLines2Array = (fpath, encoding) => {
     encoding = encoding ? encoding : FILE_DEFAULT_ENCODING;
-    var fileBuff = fs.readFileSync(fpath, {encoding: encoding});
-    var fileLinesArr = fileBuff.split('\n');
+    const fileBuff = fs.readFileSync(fpath, {encoding: encoding});
+    const fileLinesArr = fileBuff.split('\n');
     return fileLinesArr.filter(
             // Filter out last and empty lines.
             (line, index, arr) => !(line === '' && index === arr.length - 1));
-}
+};
 
 const isReadable = fpath => !callThrows(() => fs.accessSync(fpath, fs.R_OK));
 
