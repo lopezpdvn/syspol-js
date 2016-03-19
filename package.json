@@ -26,6 +26,8 @@
     "mocha": "latest",
     "gulp": "latest",
     "babel-preset-es2015": "latest",
-    "gulp-babel": "latest"
+    "gulp-babel": "latest",
+    "babel-core": "latest",
+    "babel-cli": "latest"
   }
 }
