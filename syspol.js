@@ -1,4 +1,4 @@
-﻿const SRC_LIB_PREFIX = './dist/lib';
+﻿const SRC_LIB_PREFIX = './src/lib';
 
 exports.app = require(SRC_LIB_PREFIX + '/app');
 exports.fs = require(SRC_LIB_PREFIX + '/fs');
