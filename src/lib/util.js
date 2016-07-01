@@ -133,7 +133,14 @@ const callThrows = call => {
     }
 };
 
+const inheritPrototype = (subType, superType) => {
+    const prototype = Object.create(superType.prototype);
+    prototype.constructor = subType;
+    subType.prototype = prototype;
+};
+
 exports.Logger = Logger;
 exports.randomFileName = randomFileName;
 exports.LogSeverity = LogSeverity;
 exports.callThrows = callThrows;
+exports.inheritPrototype = inheritPrototype;
